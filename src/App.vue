@@ -9,12 +9,14 @@
           :xs="{span: 20, offset: 2}" 
           :md="{span: 12, offset: 6}"
         >
-          <transition name="el-zoom-in-center" mode="out-in">
-            <el-row v-if="!loading" type="flex" justify="center">
-              <transition name="el-zoom-in-top" mode="out-in">
+          <transition name="el-zoom-in-top" mode="out-in">
+            <div key="1" v-if="!isDatabaseEmpty">
+              <el-row>
+                <h3 style="text-align: center">Your database is not empty anymore, try to search</h3>
+              </el-row>
+              <el-row type="flex" justify="center">
                 <el-form
                   ref="searchForm"
-                  v-if="!isDatabaseEmpty"
                   :model="searchForm"
                   :rules="searchFormRules"
                   @submit.native.prevent
@@ -51,17 +53,32 @@
                     </el-button>
                   </el-form-item>
                 </el-form>
-                <el-button
-                  v-else
-                  key="generate-button"
-                  type="primary"
-                  @click="onGenerateButtonClick"
-                  plain
-                >
-                  Generate data
-                </el-button>
+              </el-row>
+            </div>
+            <div key="2" v-else>
+              <transition name="el-zoom-in-top" mode="out-in">
+                <el-row v-if="loading" type="flex" justify="center">
+                  <transition name="el-zoom-in-top" mode="out-in">
+                    <el-progress v-if="isGenerating" type="circle" :percentage="loadingPercentage" :status="status" :stroke-width="12"></el-progress>
+                  </transition>
+                </el-row>
+                <div v-else>
+                  <el-row>
+                    <h3 style="text-align: center">Database is empty. Tap button below to upload random strings.</h3>
+                  </el-row>
+                  <el-row type="flex" justify="center">
+                    <el-button
+                      key="generate-button"
+                      type="primary"
+                      @click="onGenerateButtonClick"
+                      plain
+                    >
+                      Generate data
+                    </el-button>
+                  </el-row>
+                </div>
               </transition>
-            </el-row>
+            </div>
           </transition>
           <transition name="el-zoom-in-center" mode="out-in">
             <!-- <el-progress v-if="isGenerating" type="circle" :percentage="loadingPercentage" :status="status" :stroke-width="12"></el-progress> -->
@@ -73,13 +90,6 @@
               <div class="search-result">
                 <p><i class="el-icon-search"></i> Found <b>{{searchCount}} strings</b> starting with <b>"{{searchString}}"</b> (execution time {{'~' + Math.round(lastSearchDuration/1000) + 's'}})</p>
               </div>
-            </el-row>
-          </transition>
-          <transition name="el-zoom-in-top">
-            <el-row v-if="loading" type="flex" justify="center">
-              <transition name="el-zoom-in-top" mode="out-in">
-                <el-progress v-if="isGenerating" type="circle" :percentage="loadingPercentage" :status="status" :stroke-width="12"></el-progress>
-              </transition>
             </el-row>
           </transition>
         </el-col>

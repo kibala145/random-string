@@ -1,5 +1,6 @@
 /* eslint-disable */
-import {randomString, chars, total, stringLength} from '../utils/index'
+/* because of worker-module */
+import {randomString, chars, total, stringLength, reduceStringToNumber} from '../utils/index'
 import idb from './../api/idb'
 
 self.onmessage = async function(e) {
@@ -61,7 +62,7 @@ async function generateData() {
       self.postMessage({type: 'SET_GENERATING_COUNT', payload: index + 1})
       console.log(index + 1)
       console.log('saving to db')
-      await idb.saveStringsChunk(curStrArr).catch(e => {
+      await idb.saveStringsChunk(curStrArr).catch(() => {
         self.postMessage('SET_ERROR', true)
         throw('Error while saving chunk')
       })
@@ -94,7 +95,7 @@ async function search({startsWithValue, searchByValue = true}) {
           value2 = reduceStringToNumber(valueStr2)
 
     stringsCount = await idb.getStringsCount({value1, value2})
-  } else stringsCount = await idb.getStringsCount({startsWithValue}).catch(e => self.postMessage('SET_ERROR', true))
+  } else stringsCount = await idb.getStringsCount({startsWithValue}).catch(() => self.postMessage('SET_ERROR', true))
   // Finish time
   const t2 = performance.now(),
         duration = t2 - t1

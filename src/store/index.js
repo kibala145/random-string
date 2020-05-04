@@ -13,7 +13,7 @@ const store = new Vuex.Store({
     searchCount: null,
     searchString: null,
     isDatabaseLoading: false,
-    isDatabaseEmpty: false,
+    isDatabaseEmpty: true,
     isDatabaseClearing: false,
     lastSearchDuration: null,
     error: null
