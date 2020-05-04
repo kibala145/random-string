@@ -31,6 +31,7 @@ async function getObjectStore() {
   
   self.postMessage({type: 'SET_IS_DATABASE_LOADING', payload: false})
   if(!objectStoreCount) self.postMessage({type: 'SET_IS_DATABASE_EMPTY', payload: true})
+  else self.postMessage({type: 'SET_IS_DATABASE_EMPTY', payload: false})
 }
 
 async function generateData() {
